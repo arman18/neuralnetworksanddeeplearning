@@ -43,6 +43,8 @@ class Network(object):
         """Return the output of the network if ``a`` is input."""
         for b, w in zip(self.biases, self.weights):
             a = self.activator(np.dot(w, a)+b)
+            # print(a);
+            # print(type(a))
         return a
 
     def SGD(self, training_data, epochs, mini_batch_size, eta,
