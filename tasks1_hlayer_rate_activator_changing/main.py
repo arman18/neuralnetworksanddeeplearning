@@ -24,9 +24,13 @@ max_hidden_layer = 20
 max_rate = 10
 obj = {}
 
-activators = [relu,sigmoid,tanh,softmax]
-derivatives = [drelu,dsigmoid_prime,dtanh,dsoftmax]
-str_activators = ['relu','sigmoid','tanh','softmax']
+# activators = [softmax,relu,sigmoid,tanh]
+# derivatives = [dsoftmax,drelu,dsigmoid_prime,dtanh]
+# str_activators = ['softmax','relu','sigmoid','tanh']
+
+activators = [relu,sigmoid,tanh]
+derivatives = [drelu,dsigmoid_prime,dtanh]
+str_activators = ['relu','sigmoid','tanh']
 
 for rate in range(1,max_rate+1):
   obj[rate] = pd.DataFrame()
@@ -34,8 +38,8 @@ for rate in range(1,max_rate+1):
   obj[rate]["sigmoid"] = [0]*max_hidden_layer
   obj[rate]["tanh"] = [0]*max_hidden_layer
   obj[rate]["relu"] = [0]*max_hidden_layer
-  obj[rate]["softmax"] = [0]*max_hidden_layer
   obj[rate]["relu"] = [0]*max_hidden_layer
+  # obj[rate]["softmax"] = [0]*max_hidden_layer
   
   for layer in range(1,max_hidden_layer+1):
     obj[rate]["layer"][layer-1] = layer
@@ -45,3 +49,9 @@ for rate in range(1,max_rate+1):
       net = Network(neurons,activators[ac],derivatives[ac])
       percentage = net.SGD(training_data , epochs, mini_batch_size, eta, test_data )
       obj[rate][str_activators][layer-1] = percentage
+
+with open('data.pickle', 'wb') as handle:
+    pickle.dump(obj, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
+# with open('data.pickle', 'rb') as handle:
+#     b = pickle.load(handle)

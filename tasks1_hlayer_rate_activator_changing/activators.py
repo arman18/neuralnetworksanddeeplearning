@@ -29,13 +29,18 @@ def drelu(x):
 # ----------------------- softmax --------------------------------
 def softmax(x):
     """ applies softmax to an input x"""
-    e_x = np.exp(x - np.max(x))
-    return e_x / e_x.sum()
+    max_x = np.amax(x, 1).reshape(x.shape[0],1) # Get the row-wise maximum
+    e_x = np.exp(x - max_x ) # For stability
+    return e_x / e_x.sum(axis=1, keepdims=True) 
 
 def dsoftmax(x):
     s = softmax(x)
-    si_sj = - s * s.reshape(3, 1)
-    return np.diag(s) + si_sj
+    a = np.eye(s.shape[-1])
+    temp1 = np.zeros((s.shape[0], s.shape[1], s.shape[1]),dtype=np.float32)
+    temp2 = np.zeros((s.shape[0], s.shape[1], s.shape[1]),dtype=np.float32)
+    temp1 = np.einsum('ij,jk->ijk',s,a)
+    temp2 = np.einsum('ij,ik->ijk',s,s)
+    return temp1-temp2
 
 # ----------------------- Tanh --------------------------------
 # ----------------------- Tanh --------------------------------
