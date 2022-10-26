@@ -11,16 +11,16 @@ training_data , validation_data , test_data = mnist_loader.load_data_wrapper()
 from network import Network
 from activators import *
 import pandas as pd
+import pickle
 
-
-epochs = 30
+epochs = 15
 mini_batch_size = 10
-eta = 3.0 #learning rate (need to change)
+
 
 neurons_in_hidden_layer = 30
 neurons_in_output  = 10
 neurons_in_input = 784
-max_hidden_layer = 20
+max_hidden_layer = 10
 max_rate = 10
 obj = {}
 
@@ -40,15 +40,18 @@ for rate in range(1,max_rate+1):
   obj[rate]["relu"] = [0]*max_hidden_layer
   obj[rate]["relu"] = [0]*max_hidden_layer
   # obj[rate]["softmax"] = [0]*max_hidden_layer
-  
+  if rate%2 == 0:
+      with open('data.pickle', 'wb') as handle:
+          pickle.dump(obj, handle, protocol=pickle.HIGHEST_PROTOCOL)
+          
   for layer in range(1,max_hidden_layer+1):
     obj[rate]["layer"][layer-1] = layer
     for ac in range(len(activators)):
       neurons = [neurons_in_input] + [neurons_in_hidden_layer]*layer + [neurons_in_output]
       training_data , validation_data , test_data = mnist_loader . load_data_wrapper ()
       net = Network(neurons,activators[ac],derivatives[ac])
-      percentage = net.SGD(training_data , epochs, mini_batch_size, eta, test_data )
-      obj[rate][str_activators][layer-1] = percentage
+      percentage = net.SGD(training_data , epochs, mini_batch_size, rate, test_data )
+      obj[rate][str_activators[ac]][layer-1] = percentage
 
 with open('data.pickle', 'wb') as handle:
     pickle.dump(obj, handle, protocol=pickle.HIGHEST_PROTOCOL)

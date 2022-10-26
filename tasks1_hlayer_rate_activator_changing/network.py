@@ -76,7 +76,7 @@ class Network(object):
                 result  = self.evaluate(test_data)
                 print("Epoch {} : {} / {}".format(j,result,n_test))
                 if j==epochs-1:
-                  return result/n_test
+                  return result/n_test*100
             else:
                 pass
                 # print("Epoch {} complete".format(j))
